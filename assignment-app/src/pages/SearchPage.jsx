@@ -162,30 +162,30 @@ const SearchPage = () => {
                                 <div className="col-sm-3">
                                     <div className="card card-body d-flex flex-column align-items-center border border-dark-subtle">
                                         <h5 className="card-title">App Usage Time (min/day)</h5>
-                                        <p>Average - {calculateMean("App Usage Time (min/day)")}</p>
-                                        <p>Median - {calculateMedian("App Usage Time (min/day)")}</p>
+                                        <p>Average - {calculateMean("App Usage Time (min/day)")} Minutes</p>
+                                        <p>Median - {calculateMedian("App Usage Time (min/day)")} Minutes</p>
                                     </div>
                                 </div>
                                 <div className="col-sm-3">
                                     <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
                                         <h5 className="card-tytle">Screen On Time (hours/day)</h5>
 
-                                        <p>Average - {calculateMean("Screen On Time (hours/day)")}</p>
-                                        <p>Median - {calculateMedian("Screen On Time (hours/day)")}</p>
+                                        <p>Average - {calculateMean("Screen On Time (hours/day)")} Hours</p>
+                                        <p>Median - {calculateMedian("Screen On Time (hours/day)")} Hours</p>
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
                                         <h5 className="card-title">Number of Apps Installed</h5>
-                                        <p>Average - {calculateMean("Number of Apps Installed")}</p>
-                                        <p>Median - {calculateMedian("Number of Apps Installed")}</p>
+                                        <p>Average - {calculateMean("Number of Apps Installed")} Apps</p>
+                                        <p>Median - {calculateMedian("Number of Apps Installed")} Apps</p>
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
                                         <h5 className="card-title">Age</h5>
-                                        <p>Average - {calculateMean("Age")}</p>
-                                        <p>Median - {calculateMedian("Age")}</p>
+                                        <p>Average - {calculateMean("Age")} Years Old</p>
+                                        <p>Median - {calculateMedian("Age")} Years Old</p>
                                     </div>
                                 </div>
                             </section>

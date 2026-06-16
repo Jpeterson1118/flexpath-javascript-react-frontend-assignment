@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const SearchPage = () => {
-    let [keyword, setKeyword] = useState("Unfiltered")
+    let [keyword, setKeyword] = useState("Unfiltered");
     let [results, setResults] = useState([]);
+    let [isLoding, setIsLoading] = useState(false);
+    let [error, setError] = useState("");
     const tHeads = ["User ID	Device Model", "Operating System", "App Usage Time (min/day)", "Screen On Time (hours/day)", "Battery Drain (mAh/day)", "Number of Apps Installed", "Data Usage (MB/day)", "Age", "Gender", "User Behavior", "Class"];
     let tempQuery = useRef("");
 
@@ -15,13 +17,29 @@ const SearchPage = () => {
 
     const handleSearch = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        const res = await fetch(`http://localhost:3000/api/data/search?filterType=${keyword}&keyword=${tempQuery.current}`);
-        const data = await res.json();
+        try {
+            setError("")
 
-        setResults(data);
+            const res = await fetch(`http://localhost:3000/api/data/search?filterType=${keyword}&keyword=${tempQuery.current}`);
 
-        localStorage.setItem("searchResults", JSON.stringify(data));
+            if (!res.ok) {
+                setError(res.status.toString());
+                console.log(`error: ${error}`);
+                return;
+            }
+
+            const data = await res.json();
+
+            setResults(data);
+            localStorage.setItem("searchResults", JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+            setError("Server Unavailable")
+        } finally {
+            setIsLoading(false)
+        };
     };
 
     const handleEnter = (e) => {
@@ -128,66 +146,73 @@ const SearchPage = () => {
                 </section>
 
 
-                <section className="results">
-                    {
-                        !results?.length ?
-                            <div>
-                                <h3>No Records To Display</h3>
-                            </div> :
-                            <p>{`Displaying ${results.length} results`}</p>
-                    }
-                    {results?.length ? (
-                        <section className="row g-5 mb-4" >
-                            <div className="col-sm-3">
-                                <div className="card card-body d-flex flex-column align-items-center border border-dark-subtle">
-                                    <h5 className="card-title">App Usage Time (min/day)</h5>
-                                    <p>Average - {calculateMean("App Usage Time (min/day)")}</p>
-                                    <p>Median - {calculateMedian("App Usage Time (min/day)")}</p>
+                {isLoding ? <section className="results">
+                    <p>Loading ...</p>
+                </section> :
+                    <section className="results">
+                        {
+                            !results?.length ?
+                                <div>
+                                    <p>No Records To Display</p>
+                                </div> :
+                                <p>{`Displaying ${results.length} results`}</p>
+                        }
+                        {results?.length ? (
+                            <section className="row g-5 mb-4" >
+                                <div className="col-sm-3">
+                                    <div className="card card-body d-flex flex-column align-items-center border border-dark-subtle">
+                                        <h5 className="card-title">App Usage Time (min/day)</h5>
+                                        <p>Average - {calculateMean("App Usage Time (min/day)")}</p>
+                                        <p>Median - {calculateMedian("App Usage Time (min/day)")}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-sm-3">
-                                <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
-                                    <h5 className="card-tytle">Screen On Time (hours/day)</h5>
+                                <div className="col-sm-3">
+                                    <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
+                                        <h5 className="card-tytle">Screen On Time (hours/day)</h5>
 
-                                    <p>Average - {calculateMean("Screen On Time (hours/day)")}</p>
-                                    <p>Median - {calculateMedian("Screen On Time (hours/day)")}</p>
+                                        <p>Average - {calculateMean("Screen On Time (hours/day)")}</p>
+                                        <p>Median - {calculateMedian("Screen On Time (hours/day)")}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col">
-                                <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
-                                    <h5 className="card-title">Number of Apps Installed</h5>
-                                    <p>Average - {calculateMean("Number of Apps Installed")}</p>
-                                    <p>Median - {calculateMedian("Number of Apps Installed")}</p>
+                                <div className="col">
+                                    <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
+                                        <h5 className="card-title">Number of Apps Installed</h5>
+                                        <p>Average - {calculateMean("Number of Apps Installed")}</p>
+                                        <p>Median - {calculateMedian("Number of Apps Installed")}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col">
-                                <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
-                                    <h5 className="card-title">Age</h5>
-                                    <p>Average - {calculateMean("Age")}</p>
-                                    <p>Median - {calculateMedian("Age")}</p>
+                                <div className="col">
+                                    <div className="card card-body px-2 d-flex flex-column align-items-center border border-dark-subtle">
+                                        <h5 className="card-title">Age</h5>
+                                        <p>Average - {calculateMean("Age")}</p>
+                                        <p>Median - {calculateMedian("Age")}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </section>
-                    ) : null}
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                {tHeads.map((val) => (
-                                    <th scope="col" key={val}>{val}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {results.map((item,) => (
-                                <tr key={item["User ID"]}>
-                                    {Object.values(item).map((val, index) =>
-                                        <td key={index}>{val}</td>
-                                    )}
+                            </section>
+                        ) : null}
+                        {error?.length ?
+                            <p className="error text-danger">{`Error: ${error}`}</p> :
+                            null
+                        }
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    {tHeads.map((val) => (
+                                        <th scope="col" key={val}>{val}</th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </section>
+                            </thead>
+                            <tbody>
+                                {results.map((item,) => (
+                                    <tr key={item["User ID"]}>
+                                        {Object.values(item).map((val, index) =>
+                                            <td key={index}>{val}</td>
+                                        )}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </section>}
             </div>
         </div>
     )

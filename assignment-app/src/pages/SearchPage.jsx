@@ -60,8 +60,9 @@ const SearchPage = () => {
             total += + data[i]
         };
 
+        let mean = total/ data.length;
 
-        return (total / data.length).toFixed(0);
+        return mean.toFixed(1).toLocaleString("en-US")
     };
 
     const calculateMedian = (signifyer) => {
@@ -72,7 +73,8 @@ const SearchPage = () => {
 
         const mid = Math.floor(sorted.length / 2);
 
-        return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(1) : sorted[mid]
+
+        return sorted.length % 2 === 0 ?  ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(0).toLocaleString("en-US") :  sorted[mid].toLocaleString("en-US");
     };
 
     return (
